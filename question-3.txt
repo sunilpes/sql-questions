@@ -1,0 +1,51 @@
+source: https://youtu.be/KYO8StLUdCs?feature=shared
+
+Problem Statement:-
+Student Table has three columns Student_Name, Total_Marks and Year. 
+User has to write a SQL query to display Student_Name, Total_Marks, Year,  
+Prev_Yr_Marks for those whose Total_Marks are greater than or equal to the previous year.
+
+
+CREATE TABLE main.student(
+student_name  varchar(30),
+total_marks  int ,
+year  int);
+
+
+INSERT INTO main.student(student_name, total_marks, year) VALUES('Rahul',90,2010);
+INSERT INTO main.student(student_name, total_marks, year) VALUES('Sanjay',80,2010);
+INSERT INTO main.student(student_name, total_marks, year) VALUES('Mohan',70,2010);
+INSERT INTO main.student(student_name, total_marks, year) VALUES('Rahul',90,2011);
+INSERT INTO main.student(student_name, total_marks, year) VALUES('Sanjay',85,2011);
+INSERT INTO main.student(student_name, total_marks, year) VALUES('Mohan',65,2011);
+INSERT INTO main.student(student_name, total_marks, year) VALUES('Rahul',80,2012);
+INSERT INTO main.student(student_name, total_marks, year) VALUES('Sanjay',80,2012);
+INSERT INTO main.student(student_name, total_marks, year) VALUES('Mohan',90,2012);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Answers:
+WITH final_res as (
+	select *,
+	LAG(total_marks, 1, NULL) OVER(partition by student_name order by year) as prev_yr_marks 
+	from main.student
+)
+select student_name, total_marks, year, prev_yr_marks from final_res
+where total_marks >= prev_yr_marks;
