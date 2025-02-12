@@ -1,0 +1,61 @@
+source: https://youtu.be/sJTa7HNFN2I?feature=shared
+
+Problem Statement: 
+Write a SQL query to find the maximum and
+minimum values of continuous ‘Sequence’ in each ‘Group’
+
+// If database doesn't exits create one
+create database main;
+
+CREATE TABLE main.Emp(
+grp VARCHAR(20),
+seq  int);
+
+INSERT INTO main.Emp(grp, seq) VALUES('A',1);
+INSERT INTO main.Emp(grp, seq) VALUES('A',2);
+INSERT INTO main.Emp(grp, seq) VALUES('A',3);
+INSERT INTO main.Emp(grp, seq) VALUES('A',5);
+INSERT INTO main.Emp(grp, seq) VALUES('A',6);
+INSERT INTO main.Emp(grp, seq) VALUES('A',8);
+INSERT INTO main.Emp(grp, seq) VALUES('A',9);
+INSERT INTO main.Emp(grp, seq) VALUES('B',11);
+INSERT INTO main.Emp(grp, seq) VALUES('C',1);
+INSERT INTO main.Emp(grp, seq) VALUES('C',2);
+INSERT INTO main.Emp(grp, seq) VALUES('C',3);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Answers:
+WITH group_split as (
+	select seq, grp,
+	ROW_NUMBER() OVER(partition by grp order by seq) as rnk,
+	seq - ROW_NUMBER() OVER(partition by grp order by seq) as grp_split
+	from main.Emp
+),
+final_res as (select 
+	grp,
+	grp_split,
+	MAX(seq) as max_seq,
+	MIN(seq) as min_seq
+from group_split
+group by 1,2)
+select grp, max_seq, min_seq
+from final_res;
+
